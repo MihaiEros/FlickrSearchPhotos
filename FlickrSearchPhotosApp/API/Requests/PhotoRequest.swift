@@ -15,7 +15,7 @@ final class PhotoRequest {
             "api_key": "84291e09c736db071ec45426c55189b4",
             "format": "json",
             "nojsoncallback": "1",
-            "per_page": "10"
+            "per_page": "100"
         ]
     }()
     private let _parameters: Parameters

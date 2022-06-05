@@ -24,5 +24,4 @@ Simple search photos application which uses Flickr REST API made in `Swift`.
 <img width="350" alt="Screenshot 2022-06-05 at 20 57 33" src="https://user-images.githubusercontent.com/6830197/172063905-1259d96a-d138-45b2-b0d4-0e3b72ba39c4.png">
 
 ## Demo (gif)
-![Simulator Screen Recording - iPhone 13 Pro Max - 2022-06-05 at 21 00 09](https://user-images.githubusercontent.com/6830197/172063991-dca4943e-7cb3-4435-a303-4314163349f8.gif)
-
+![Simulator Screen Recording - iPhone 13 Pro Max - 2022-06-06 at 00 07 06](https://user-images.githubusercontent.com/6830197/172070598-2fb5bb85-e8a4-4dfe-bdd3-c0739e7508f1.gif)

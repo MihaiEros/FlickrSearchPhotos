@@ -96,53 +96,10 @@ final class PhotoViewModel {
                     
                     self?.photos.append(contentsOf: pagedResponse.photos)
                     
-                    if pagedResponse.page > 1 {
-                        let indexPaths = self?.calculateIndexPathsToReload(from: pagedResponse.photos)
-                        self?.delegate?.fetchingDidComplete(with: indexPaths)
-                    } else {
-                        var indices = [IndexPath]()
-                        let photosCount = self?.photos.count
-                        for row in 0..<(photosCount ?? 0) {
-                            let index = IndexPath(row: row, section: 0)
-                            indices.append(index)
-                        }
-                        self?.delegate?.fetchingDidComplete(with: indices)
-                    }
+                    let indexPaths = self?.calculateIndexPathsToReload(from: pagedResponse.photos)
+                    self?.delegate?.fetchingDidComplete(with: indexPaths)
                 }
             }
         }
-    }
-}
-
-class ImageLoadOperation: Operation {
-    var image: UIImage?
-    var loadingCompleteHandler: ((UIImage) -> Void)?
-    
-    private let _photo: Photo
-    
-    init(_ photo: Photo) {
-        _photo = photo
-    }
-    
-    override func main() {
-        if isCancelled { return }
-        
-        guard let url = _photo.url else { return }
-        
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let self = self,
-                  let data = data,
-                  let image = UIImage(data: data) else {
-                return
-            }
-            
-            self.image = image
-            if self.isCancelled { return }
-            if let loadingCompleteHandler = self.loadingCompleteHandler {
-                DispatchQueue.main.async {
-                    loadingCompleteHandler(image)
-                }
-            }
-        }.resume()
     }
 }

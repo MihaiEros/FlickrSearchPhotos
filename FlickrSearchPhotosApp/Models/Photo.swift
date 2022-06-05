@@ -16,6 +16,7 @@ struct Photo: Decodable {
         URL(string: "https://live.staticflickr.com/\(server)/\(id)_\(secret)_q.jpg")
     }
     
+    /// `Description` used to see details about a `Photo` struct.
     var description: String {
         """
         

@@ -9,7 +9,6 @@ import UIKit
 
 final class MainViewController: UIViewController {
     /// Properties
-    /// ViewModel
     var viewModel: PhotoViewModel?
     /// Views
     lazy var collectionView: UICollectionView = {
@@ -27,6 +26,7 @@ final class MainViewController: UIViewController {
         return collection
     }()
     
+    /// Private
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
         controller.searchBar.placeholder = "Search photos using any word"
@@ -56,26 +56,23 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubview(collectionView)
-        view.addSubview(infoLabel)
-        
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.prefetchDataSource = self
-
-        searchController.searchBar.delegate = self
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
+        setupUI()
+        setupCollectionView()
+        setupSearchController()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        addCollectionViewConstraints()
-        addInfoLabelConstraints()
+        addConstraints()
     }
 
     // MARK: - Constraints
+    
+    private func addConstraints() {
+        addCollectionViewConstraints()
+        addInfoLabelConstraints()
+    }
     
     private func addCollectionViewConstraints() {
         NSLayoutConstraint.activate([
@@ -91,6 +88,25 @@ final class MainViewController: UIViewController {
             infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             infoLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+    }
+    
+    // MARK: - Setup
+    
+    private func setupUI() {
+        view.addSubview(collectionView)
+        view.addSubview(infoLabel)
+    }
+    
+    private func setupCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.prefetchDataSource = self
+    }
+    
+    private func setupSearchController() {
+        searchController.searchBar.delegate = self
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
 }
 

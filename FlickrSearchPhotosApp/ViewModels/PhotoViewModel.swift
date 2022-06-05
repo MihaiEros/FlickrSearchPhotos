@@ -13,7 +13,6 @@ protocol PhotoViewModelDelegate: AnyObject {
 }
 
 final class PhotoViewModel {
-    
     /// Private
     private weak var delegate: PhotoViewModelDelegate?
     
@@ -79,6 +78,10 @@ final class PhotoViewModel {
                 }
             case .success(let pagedResponse):
                 DispatchQueue.main.async { [weak self] in
+                    /// See https://www.flickr.com/groups/51035612836@N01/discuss/72157631512108069/
+                    /// `total` value is inconsistent between `pages`
+                    /// Workaround: only assign for first page the total number of photos.
+                    /// Otherwise `UIKit` will complain when reloading items at [IndexPath] and fall back to `reloadData()`.
                     if self?.currentPage == 1 {
                         self?.total = pagedResponse.totalPhotos
                     }

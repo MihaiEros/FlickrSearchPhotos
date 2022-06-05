@@ -7,18 +7,8 @@
 
 import Foundation
 
-class PhotoRequest {
-    var parameters: Parameters {
-        let parameters = defaultParameters.merging(self._parameters, uniquingKeysWith: +)
-        return parameters
-    }
-    
-    let _parameters: Parameters
-    
-    init(searchTerm: String) {
-        self._parameters = ["text": searchTerm]
-    }
-    
+final class PhotoRequest {
+    /// Private
     private lazy var defaultParameters: Parameters = {
         return [
             "method": "flickr.photos.search",
@@ -28,4 +18,17 @@ class PhotoRequest {
             "per_page": "10"
         ]
     }()
+    private let _parameters: Parameters
+    
+    /// Computed parameters which include `defaultParameters`
+    var parameters: Parameters {
+        let parameters = defaultParameters.merging(self._parameters, uniquingKeysWith: +)
+        return parameters
+    }
+
+    // MARK: - Initializer
+    
+    init(searchTerm: String) {
+        self._parameters = ["text": searchTerm]
+    }
 }

@@ -27,6 +27,9 @@ final class MainViewController: UIViewController {
     }()
     
     /// Private
+    var loadingQueue = OperationQueue()
+    var loadingOperations: [IndexPath: ImageLoadOperation] = [:]
+    
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
         controller.searchBar.placeholder = "Search photos using any word"
@@ -115,7 +118,7 @@ final class MainViewController: UIViewController {
 extension MainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        print("[DEBUG] Selected item at row: \(indexPath.row), section: \(indexPath.section):\n \(viewModel?.photo(at: indexPath.row).description ?? "n/a")")
+        print("[DEBUG] Selected item at row: \(indexPath.row), section: \(indexPath.section):\n \(viewModel?.photo(at: indexPath.row)?.description ?? "n/a")")
     }
 }
 
@@ -131,17 +134,44 @@ extension MainViewController: UICollectionViewDataSource {
             fatalError("Dequeue for `PhotoCollectionViewCell` is failing!")
         }
 
-        if isLoadingCell(for: indexPath) {
-            cell.configure(with: .none)
-        } else {
-            cell.configure(with: viewModel?.photo(at: indexPath.row))
-        }
+        cell.configure(with: .none)
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? PhotoCollectionViewCell else { return }
+        
+        let updateCellClosure: (UIImage?) -> Void = { [weak self] image in
+            guard let self = self else {
+                return
+            }
+            
+            cell.configure(with: image, animated: true)
+            self.loadingOperations.removeValue(forKey: indexPath)
+        }
+        
+        if let operation = loadingOperations[indexPath] {
+            if let image = operation.image {
+                cell.configure(with: image, animated: false)
+                loadingOperations.removeValue(forKey: indexPath)
+            } else {
+                operation.loadingCompleteHandler = updateCellClosure
+            }
+        } else {
+            if let photo = viewModel?.photo(at: indexPath.row) {
+                let operation = ImageLoadOperation(photo)
+                operation.loadingCompleteHandler = updateCellClosure
+                loadingQueue.addOperation(operation)
+                loadingOperations[indexPath] = operation
+            }
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? PhotoCollectionViewCell {
-            cell.cancelImageDownload()
+        if let operation = loadingOperations[indexPath] {
+            operation.cancel()
+            loadingOperations.removeValue(forKey: indexPath)
         }
     }
 }

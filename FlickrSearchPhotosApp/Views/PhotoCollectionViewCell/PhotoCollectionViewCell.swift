@@ -13,12 +13,19 @@ final class PhotoCollectionViewCell: UICollectionViewCell {
     static let identifier = "PhotoCollectionViewCell"
     
     /// Views
-    private let photoImageView: DownloadableImageViewContainer = {
-        let imageView = DownloadableImageViewContainer()
+    private let photoImageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
+    }()
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(frame: .zero)
+        indicator.style = .medium
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
     }()
     
     // MARK: - Initializer
@@ -28,6 +35,9 @@ final class PhotoCollectionViewCell: UICollectionViewCell {
         
         contentView.addSubview(photoImageView)
         addPhotoImageViewConstraints()
+        
+        contentView.addSubview(activityIndicator)
+        addActivityIndicatorConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -38,7 +48,9 @@ final class PhotoCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        photoImageView.imageView.image = nil
+        DispatchQueue.main.async {
+            self.setImageView(.none)
+        }
     }
     
     // MARK: - Constraints
@@ -52,19 +64,34 @@ final class PhotoCollectionViewCell: UICollectionViewCell {
         ])
     }
     
+    private func addActivityIndicatorConstraints() {
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        ])
+    }
+    
     // MARK: - Configure cell
     
-    func configure(with photo: Photo?) {
-        if let photo = photo {
-            photoImageView.downloadImage(url: photo.url)
-        } else {
-            photoImageView.startAnimating()
+    func configure(with image: UIImage?, animated: Bool = true) {
+        DispatchQueue.main.async {
+            if animated {
+                UIView.animate(withDuration: 0.3) {
+                    self.setImageView(image)
+                }
+            } else {
+                self.setImageView(image)
+            }
         }
     }
     
-    // MARK: - Cancel Image Download
-    
-    func cancelImageDownload() {
-        photoImageView.cancelImageDownload()
+    private func setImageView(_ image: UIImage?) {
+        if let image = image {
+            self.photoImageView.image = image
+            activityIndicator.stopAnimating()
+        } else {
+            self.photoImageView.image = nil
+            activityIndicator.startAnimating()
+        }
     }
 }

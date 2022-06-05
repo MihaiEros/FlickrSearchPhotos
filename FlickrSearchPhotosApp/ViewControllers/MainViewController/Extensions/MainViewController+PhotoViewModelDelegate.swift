@@ -20,6 +20,14 @@ extension MainViewController: PhotoViewModelDelegate {
             collectionView.reloadData()
             return
         }
+    
+        for newIndexPath in newIndexPaths {
+            if let photo = viewModel?.photo(at: newIndexPath.row) {
+                let operation = ImageLoadOperation(photo)
+                loadingQueue.addOperation(operation)
+                loadingOperations[newIndexPath] = operation
+            }
+        }
         
         let indexPathsToReload = visibleIndexPathsToReload(intersecting: newIndexPaths)
         collectionView.reloadItems(at: indexPathsToReload)

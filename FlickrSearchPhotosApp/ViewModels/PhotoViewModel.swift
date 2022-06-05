@@ -47,8 +47,8 @@ final class PhotoViewModel {
     
     // MARK: - Photos
     
-    func photo(at index: Int) -> Photo {
-        photos[index]
+    func photo(at index: Int) -> Photo? {
+        photos[safe: index]
     }
     
     private func calculateIndexPathsToReload(from newPhotos: [Photo]) -> [IndexPath] {
@@ -95,10 +95,56 @@ final class PhotoViewModel {
                         let indexPaths = self?.calculateIndexPathsToReload(from: pagedResponse.photos)
                         self?.delegate?.fetchingDidComplete(with: indexPaths)
                     } else {
-                        self?.delegate?.fetchingDidComplete(with: .none)
+                        var indices = [IndexPath]()
+                        let photosCount = self?.photos.count
+                        for row in 0..<(photosCount ?? 0) {
+                            let index = IndexPath(row: row, section: 0)
+                            indices.append(index)
+                        }
+                        self?.delegate?.fetchingDidComplete(with: indices)
                     }
                 }
             }
         }
+    }
+}
+
+class ImageLoadOperation: Operation {
+    var image: UIImage?
+    var loadingCompleteHandler: ((UIImage) -> Void)?
+    
+    private let _photo: Photo
+    
+    init(_ photo: Photo) {
+        _photo = photo
+    }
+    
+    override func main() {
+        if isCancelled { return }
+        
+        guard let url = _photo.url else { return }
+        
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self,
+                  let data = data,
+                  let image = UIImage(data: data) else {
+                return
+            }
+            
+            self.image = image
+            if self.isCancelled { return }
+            if let loadingCompleteHandler = self.loadingCompleteHandler {
+                DispatchQueue.main.async {
+                    loadingCompleteHandler(image)
+                }
+            }
+        }.resume()
+    }
+}
+
+extension Collection {
+    subscript(safe index: Index) -> Iterator.Element? {
+        guard indices.contains(index) else { return nil }
+        return self[index]
     }
 }

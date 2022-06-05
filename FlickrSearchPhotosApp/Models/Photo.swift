@@ -5,7 +5,7 @@
 //  Created by Mihai Eros on 05.06.2022.
 //
 
-import Foundation
+import UIKit
 
 struct Photo: Decodable {
     let id: String

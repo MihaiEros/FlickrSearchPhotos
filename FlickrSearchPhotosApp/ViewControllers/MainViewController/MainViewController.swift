@@ -171,7 +171,6 @@ extension MainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let operation = loadingOperations[indexPath] {
             operation.cancel()
-            loadingOperations.removeValue(forKey: indexPath)
         }
     }
 }

@@ -1,8 +1,8 @@
 ## FlickrSearchPhotos
-Simple search photos application which uses Flickr REST API.
+Simple search photos application which uses Flickr REST API made in `Swift`.
 
 ## Requirements
-# Use Flickr public API to create a simple photo app in Swift:
+# Use Flickr public API to create a simple photo app:
 - implement a search functionality using `flickr.photos.search` - [more](https://www.flickr.com/services/api/flickr.photos.search.html).
 - display collection of photos from search results
 - implement infinite scrolling on the search results (use paging for the search results based on collection scroll position)
@@ -11,9 +11,7 @@ Simple search photos application which uses Flickr REST API.
  - Swift 
 
 ## Dependencies used
-- Cocoapods [x]
-- SPM [x]
-- Carthage [x]
+- none.
 
 ## User Interface 
 - made programmatically using `AutoLayout`

@@ -194,6 +194,10 @@ extension MainViewController: UISearchBarDelegate {
              return
         }
         
+        isSearching = true
+        viewModel?.clearAllPhotos()
+        collectionView.reloadData()
+        
         let request = PhotoRequest(searchTerm: searchTerm)
         viewModel = PhotoViewModel(request: request, delegate: self)
         viewModel?.fetchPhotos()

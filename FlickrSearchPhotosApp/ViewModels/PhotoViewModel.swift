@@ -60,6 +60,11 @@ final class PhotoViewModel {
         }
     }
     
+    func clearAllPhotos() {
+        photos = [Photo]()
+    }
+
+    
     // MARK: Data fetch
     
     func fetchPhotos() {

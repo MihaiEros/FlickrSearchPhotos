@@ -8,7 +8,7 @@
 import UIKit
 
 final class DownloadableImageViewContainer: UIView {
-    
+    /// Cache
     private lazy var imageCache: NSCache<AnyObject, AnyObject> = {
         let cache = NSCache<AnyObject, AnyObject>()
         cache.countLimit = 200
@@ -16,11 +16,9 @@ final class DownloadableImageViewContainer: UIView {
         return cache
     }()
     
+    /// Properties
     var urlString: String?
     var dataTask: URLSessionDataTask?
-    
-    private var isDownloading = false
-    
     let imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.clipsToBounds = true
@@ -29,12 +27,16 @@ final class DownloadableImageViewContainer: UIView {
         return imageView
     }()
     
+    /// Private
+    private var isDownloading = false
     private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(frame: .zero)
         indicator.style = .medium
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
+    
+    // MARK: - Initializer
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,6 +54,8 @@ final class DownloadableImageViewContainer: UIView {
         fatalError()
     }
     
+    // MARK: - Constraints
+    
     private func addImageViewConstraints() {
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalTo: self.widthAnchor),
@@ -68,10 +72,7 @@ final class DownloadableImageViewContainer: UIView {
         ])
     }
     
-    func startAnimating() {
-        activityIndicator.isHidden = false
-        activityIndicator.startAnimating()
-    }
+    // MARK: - Image download
     
     func downloadImage(url: URL?) {
         guard let url = url else {
@@ -116,4 +117,10 @@ final class DownloadableImageViewContainer: UIView {
         dataTask = nil
     }
     
+    // MARK: - Helpers
+    
+    func startAnimating() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
 }

@@ -13,19 +13,29 @@ enum FlickrClientError: Error {
     case badRequestEncoding
 }
 
+private enum Constants {
+    static let baseUrlString = "https://www.flickr.com/services/rest/"
+    static let pageKey = "page"
+}
+
 final class FlickrClient {
+    /// Private
     private lazy var baseURL: URL? = {
-        guard let url = URL(string: "https://www.flickr.com/services/rest/") else {
+        guard let url = URL(string: Constants.baseUrlString) else {
             return nil
         }
         return url
     }()
-    
+    /// Properties
     let session: URLSession
+    
+    // MARK: - Initializer
     
     init(session: URLSession = URLSession.shared) {
         self.session = session
     }
+    
+    // MARK: - Fetch method
     
     func fetch(with request: PhotoRequest,
                page: Int,
@@ -35,7 +45,7 @@ final class FlickrClient {
         }
         
         let urlRequest = URLRequest(url: baseURL)
-        let parameters = ["page": "\(page)"].merging(request.parameters, uniquingKeysWith: +)
+        let parameters = [Constants.pageKey: "\(page)"].merging(request.parameters, uniquingKeysWith: +)
         
         guard let encodedURLRequest = urlRequest.encode(with: parameters) else {
             completion(.failure(FlickrClientError.badRequestEncoding))

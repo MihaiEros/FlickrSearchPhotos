@@ -11,9 +11,7 @@ typealias Parameters = [String: String]
 
 extension URLRequest {
     func encode(with parameters: Parameters?) -> URLRequest? {
-        guard let parameters = parameters else {
-            return nil
-        }
+        guard let parameters = parameters else { return nil }
         
         var encodedURLRequest = self
         
@@ -27,8 +25,8 @@ extension URLRequest {
             newUrlComponents.queryItems = queryItems
             encodedURLRequest.url = newUrlComponents.url
             return encodedURLRequest
-        } else {
-            return nil
         }
+        
+        return nil
     }
 }

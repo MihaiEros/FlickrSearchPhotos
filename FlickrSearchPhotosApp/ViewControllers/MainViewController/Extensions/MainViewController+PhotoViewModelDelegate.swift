@@ -9,6 +9,11 @@ import UIKit
 
 // MARK: - PhotoViewModelDelegate
 
+fileprivate enum Constants {
+    static let alertTitle: String = "Error"
+    static let actionOK: String = "OK"
+}
+
 extension MainViewController: PhotoViewModelDelegate {
     func fetchingDidComplete(with newIndexPaths: [IndexPath]?) {
         guard let newIndexPaths = newIndexPaths else {
@@ -25,8 +30,8 @@ extension MainViewController: PhotoViewModelDelegate {
     }
     
     fileprivate func presentAlert(with reason: String) {
-        let alert = UIAlertController(title: "Error", message: reason, preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default)
+        let alert = UIAlertController(title: Constants.alertTitle, message: reason, preferredStyle: .alert)
+        let action = UIAlertAction(title: Constants.actionOK, style: .default)
         alert.addAction(action)
         
         present(alert, animated: true)

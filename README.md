@@ -11,9 +11,7 @@ Simple search photos application which uses Flickr REST API made in `Swift`.
  - Swift 
 
 ## Dependencies used
-- Cocoapods [x]
-- SPM [x]
-- Carthage [x]
+- none.
 
 ## User Interface 
 - made programmatically using `AutoLayout`

@@ -1,4 +1,4 @@
-## FlickrSearchPhotos ![Supported Platforms](https://img.shields.io/cocoapods/p/UILabel+Copyable.svg)
+## FlickrSearchPhotos ![Supported Platforms](https://img.shields.io/badge/swift-5.5-brightgreen?style=flat&logo=swift)
 Simple search photos application which uses Flickr REST API made in `Swift`.
 
 ## Requirements
